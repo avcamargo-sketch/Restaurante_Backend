@@ -4,7 +4,7 @@ use Slim\App;
 
 return function (App $app) {
     
-    
+    // Login
     $app->post('/login', function ($request, $response) {
         try {
             $data = json_decode($request->getBody()->getContents(), true);
@@ -19,7 +19,7 @@ return function (App $app) {
         }
     });
 
-   
+    // Logout
     $app->post('/logout', function ($request, $response) {
         try {
             $token = str_replace('Bearer ', '', $request->getHeaderLine('Authorization'));
@@ -33,7 +33,7 @@ return function (App $app) {
         }
     });
 
-   
+    // Validar token
     $app->get('/validar', function ($request, $response) {
         $token = str_replace('Bearer ', '', $request->getHeaderLine('Authorization'));
         $controller = new AuthController();

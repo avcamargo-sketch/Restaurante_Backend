@@ -9,6 +9,9 @@ $endpoints = require __DIR__ . '/../app/Routes/endpoints.php';
 
 $app = AppFactory::create();
 
+// OBLIGATORIO para Slim 4
+$app->addRoutingMiddleware();
+
 // CORS
 $cors($app);
 
