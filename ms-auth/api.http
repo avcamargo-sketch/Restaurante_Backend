@@ -1,0 +1,68 @@
+### ============================================================
+### MICROSERVICIO: ms-auth (Puerto 8001)
+### ============================================================
+
+### ---------- PRUEBA 1: Login con usuario (admin) ----------
+POST http://127.0.0.1:8001/login
+Content-Type: application/json
+
+{
+    "usuario": "admin",
+    "contrasena": "admin123"
+}
+
+### ---------- PRUEBA 2: Login con usuario (empleado) ----------
+POST http://127.0.0.1:8001/login
+Content-Type: application/json
+
+{
+    "usuario": "empleado",
+    "contrasena": "empleado123"
+}
+
+### ---------- PRUEBA 3: Login con correo (admin) ----------
+POST http://127.0.0.1:8001/login
+Content-Type: application/json
+
+{
+    "correo": "admin@restaurante.com",
+    "contrasena": "admin123"
+}
+
+### ---------- PRUEBA 4: Login con correo (empleado) ----------
+POST http://127.0.0.1:8001/login
+Content-Type: application/json
+
+{
+    "correo": "empleado@restaurante.com",
+    "contrasena": "empleado123"
+}
+
+### ---------- PRUEBA 5: Login con credenciales incorrectas ----------
+POST http://127.0.0.1:8001/login
+Content-Type: application/json
+
+{
+    "usuario": "admin",
+    "contrasena": "clave_mala"
+}
+
+### ---------- PRUEBA 6: Login faltan datos ----------
+POST http://127.0.0.1:8001/login
+Content-Type: application/json
+
+{
+    "usuario": "admin"
+}
+
+### ---------- PRUEBA 7: Validar sesión (copiar token del login) ----------
+GET http://127.0.0.1:8001/validar
+Authorization: Bearer 66a48e178154b3e8eb26acfff32e0ab538429b2be8ec9fb3c523aa75fc7e8381
+
+### ---------- PRUEBA 8: Logout (copiar token del login) ----------
+POST http://127.0.0.1:8001/logout
+Authorization: Bearer 66a48e178154b3e8eb26acfff32e0ab538429b2be8ec9fb3c523aa75fc7e8381
+
+### ---------- PRUEBA 9: Validar después de logout ----------
+GET http://127.0.0.1:8001/validar
+Authorization: Bearer 66a48e178154b3e8eb26acfff32e0ab538429b2be8ec9fb3c523aa75fc7e8381
