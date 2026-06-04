@@ -1,0 +1,77 @@
+### ============================================================
+### MICROSERVICIO: ms-productos (Puerto 8003)
+### ============================================================
+
+### ============================================================
+### CATEGORÍAS
+### ============================================================
+
+### ---------- PRUEBA 1: Listar todas las categorías ----------
+GET http://127.0.0.1:8003/categorias
+
+### ---------- PRUEBA 2: Consultar categoría por ID ----------
+GET http://127.0.0.1:8003/categoria/1
+
+### ---------- PRUEBA 3: Crear categoría ----------
+POST http://127.0.0.1:8003/categoria
+Content-Type: application/json
+
+{
+    "nombre": "Ensaladas",
+    "descripcion": "Ensaladas frescas"
+}
+
+### ---------- PRUEBA 4: Editar categoría ----------
+PUT http://127.0.0.1:8003/categoria/5
+Content-Type: application/json
+
+{
+    "nombre": "Ensaladas Especiales",
+    "descripcion": "Ensaladas gourmet"
+}
+
+### ---------- PRUEBA 5: Eliminar categoría ----------
+DELETE http://127.0.0.1:8003/categoria/5
+
+### ============================================================
+### PRODUCTOS
+### ============================================================
+
+### ---------- PRUEBA 6: Listar todos los productos ----------
+GET http://127.0.0.1:8003/productos
+
+### ---------- PRUEBA 7: Consultar producto por ID ----------
+GET http://127.0.0.1:8003/producto/1
+
+### ---------- PRUEBA 8: Crear producto ----------
+POST http://127.0.0.1:8003/producto
+Content-Type: application/json
+
+{
+    "nombre": "Pizza Margarita",
+    "descripcion": "Pizza con queso y tomate",
+    "precio": 25000,
+    "disponible": true,
+    "categoria_id": 3
+}
+
+### ---------- PRUEBA 9: Editar producto ----------
+PUT http://127.0.0.1:8003/producto/4
+Content-Type: application/json
+
+{
+    "nombre": "Pizza Especial",
+    "descripcion": "Pizza con queso, tomate y pepperoni",
+    "precio": 32000,
+    "disponible": true,
+    "categoria_id": 3
+}
+
+### ---------- PRUEBA 10: Eliminar producto ----------
+DELETE http://127.0.0.1:8003/producto/4
+
+### ---------- PRUEBA 11: Buscar productos por categoría ----------
+GET http://127.0.0.1:8003/productos?categoria=2
+
+### ---------- PRUEBA 12: Buscar productos disponibles ----------
+GET http://127.0.0.1:8003/productos?disponible=true
