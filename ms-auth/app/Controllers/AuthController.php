@@ -8,19 +8,22 @@ class AuthController
 {
     public function login($data)
     {
-        if (empty($data['usuario']) || empty($data['contrasena'])) {
+        $login = trim($data['usuario'] ?? $data['login'] ?? '');
+        $contrasena = $data['contrasena'] ?? $data['password'] ?? '';
+
+        if ($login === '' || $contrasena === '') {
             throw new Exception("Usuario y contraseña requeridos", 1);
         }
 
-        $usuario = Usuario::where('usuario', $data['usuario'])
-                          ->orWhere('correo', $data['usuario'])
+        $usuario = Usuario::where('usuario', $login)
+                          ->orWhere('correo', $login)
                           ->first();
 
-        if (!$usuario || $usuario->contrasena !== $data['contrasena']) {
+        if (!$usuario || !$this->validarContrasena($contrasena, $usuario->contrasena)) {
             throw new Exception("Credenciales incorrectas", 2);
         }
 
-        if ($usuario->estado !== 'activo') {
+        if (($usuario->estado ?? 'activo') !== 'activo') {
             throw new Exception("Usuario inactivo", 3);
         }
 
@@ -52,9 +55,22 @@ class AuthController
 
     public function validarSesion($token)
     {
+        if (!$token) {
+            return false;
+        }
+
         $usuario = Usuario::where('token', $token)
                           ->where('sesion_activa', true)
                           ->first();
         return $usuario ? true : false;
+    }
+
+    private function validarContrasena($plana, $guardada)
+    {
+        if (password_get_info($guardada)['algo']) {
+            return password_verify($plana, $guardada);
+        }
+
+        return $plana === $guardada;
     }
 }

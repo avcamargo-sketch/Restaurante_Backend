@@ -6,6 +6,8 @@ use Exception;
 
 class MesaController
 {
+    private array $estados = ['disponible', 'reservada', 'ocupada', 'fuera_servicio'];
+
     public function getMesas() {
         return Mesa::all();
     }
@@ -18,7 +20,8 @@ class MesaController
 
     public function crearMesa($data) {
         if (empty($data['numero'])) throw new Exception("Número requerido", 2);
-        if ($data['capacidad'] <= 0) throw new Exception("Capacidad debe ser mayor a cero", 3);
+        if (!isset($data['capacidad']) || $data['capacidad'] <= 0) throw new Exception("Capacidad debe ser mayor a cero", 3);
+        if (isset($data['estado']) && !in_array($data['estado'], $this->estados)) throw new Exception("Estado de mesa inválido", 5);
         
         $existe = Mesa::where('numero', $data['numero'])->first();
         if ($existe) throw new Exception("Mesa ya existe", 4);
@@ -35,7 +38,21 @@ class MesaController
         if (isset($data['capacidad']) && $data['capacidad'] <= 0) {
             throw new Exception("Capacidad debe ser mayor a cero", 3);
         }
+        if (isset($data['estado']) && !in_array($data['estado'], $this->estados)) {
+            throw new Exception("Estado de mesa inválido", 5);
+        }
         $mesa->update($data);
+        return $mesa;
+    }
+
+    public function cambiarEstado($id, $estado) {
+        $mesa = $this->getMesa($id);
+        if (!in_array($estado, $this->estados)) {
+            throw new Exception("Estado de mesa inválido", 5);
+        }
+
+        $mesa->estado = $estado;
+        $mesa->save();
         return $mesa;
     }
 

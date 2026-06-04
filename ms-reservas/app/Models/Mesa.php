@@ -7,4 +7,8 @@ class Mesa extends Model {
     protected $table = 'mesas';
     public $timestamps = true;
     protected $fillable = ['numero', 'capacidad', 'estado'];
+
+    public function reservas() {
+        return $this->hasMany(Reserva::class, 'mesa_id');
+    }
 }

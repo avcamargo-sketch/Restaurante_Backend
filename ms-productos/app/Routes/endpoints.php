@@ -13,7 +13,7 @@ return function (App $app) {
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     });
 
-    $app->get('/producto/{id}', function ($request, $response, $args) {
+    $app->get('/productos/{id}', function ($request, $response, $args) {
         try {
             $controller = new ProductoController();
             $producto = $controller->getProducto($args['id']);
@@ -25,9 +25,9 @@ return function (App $app) {
         }
     });
 
-    $app->post('/producto', function ($request, $response) {
+    $app->post('/productos', function ($request, $response) {
         try {
-            $data = json_decode($request->getBody()->getContents(), true);
+            $data = json_decode($request->getBody()->getContents(), true) ?? [];
             $controller = new ProductoController();
             $producto = $controller->crearProducto($data);
             $response->getBody()->write($producto->toJson());
@@ -39,9 +39,9 @@ return function (App $app) {
         }
     });
 
-    $app->put('/producto/{id}', function ($request, $response, $args) {
+    $app->put('/productos/{id}', function ($request, $response, $args) {
         try {
-            $data = json_decode($request->getBody()->getContents(), true);
+            $data = json_decode($request->getBody()->getContents(), true) ?? [];
             $controller = new ProductoController();
             $producto = $controller->editarProducto($args['id'], $data);
             $response->getBody()->write($producto->toJson());
@@ -52,7 +52,7 @@ return function (App $app) {
         }
     });
 
-    $app->delete('/producto/{id}', function ($request, $response, $args) {
+    $app->delete('/productos/{id}', function ($request, $response, $args) {
         try {
             $controller = new ProductoController();
             $controller->eliminarProducto($args['id']);
@@ -69,6 +69,13 @@ return function (App $app) {
         $controller = new ProductoController();
         $categorias = $controller->getCategorias();
         $response->getBody()->write($categorias->toJson());
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    });
+
+    $app->get('/productos/categoria/{categoria}', function ($request, $response, $args) {
+        $controller = new ProductoController();
+        $productos = $controller->getProductos(['categoria' => $args['categoria']]);
+        $response->getBody()->write($productos->toJson());
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     });
 };

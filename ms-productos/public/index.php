@@ -9,6 +9,7 @@ $endpoints = require __DIR__ . '/../app/Routes/endpoints.php';
 
 $app = AppFactory::create();
 
+$app->addBodyParsingMiddleware();
 $app->addRoutingMiddleware();
 
 $cors($app);

@@ -7,7 +7,7 @@ return function (App $app) {
     // Login
     $app->post('/login', function ($request, $response) {
         try {
-            $data = json_decode($request->getBody()->getContents(), true);
+            $data = json_decode($request->getBody()->getContents(), true) ?? [];
             $controller = new AuthController();
             $resultado = $controller->login($data);
             $response->getBody()->write(json_encode($resultado));
@@ -40,5 +40,14 @@ return function (App $app) {
         $valido = $controller->validarSesion($token);
         $response->getBody()->write(json_encode(['valido' => $valido]));
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    });
+
+    $app->get('/validate-token', function ($request, $response) {
+        $token = str_replace('Bearer ', '', $request->getHeaderLine('Authorization'));
+        $controller = new AuthController();
+        $valido = $controller->validarSesion($token);
+        $status = $valido ? 200 : 401;
+        $response->getBody()->write(json_encode(['valid' => $valido]));
+        return $response->withStatus($status)->withHeader('Content-Type', 'application/json');
     });
 };

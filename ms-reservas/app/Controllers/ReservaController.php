@@ -7,6 +7,8 @@ use Exception;
 
 class ReservaController
 {
+    private array $estados = ['pendiente', 'confirmada', 'cancelada', 'finalizada'];
+
     public function getReservas($filtros = []) {
         $query = Reserva::with('mesa');
         
@@ -30,8 +32,44 @@ class ReservaController
     }
 
     public function crearReserva($data) {
+        $this->validarReserva($data);
+
+        return Reserva::create([
+            'nombre_cliente' => $data['nombre_cliente'],
+            'telefono_cliente' => $data['telefono_cliente'],
+            'cantidad_personas' => $data['cantidad_personas'],
+            'fecha' => $data['fecha'],
+            'hora' => $data['hora'],
+            'observaciones' => $data['observaciones'] ?? null,
+            'estado' => $data['estado'] ?? 'pendiente',
+            'mesa_id' => $data['mesa_id']
+        ]);
+    }
+
+    public function editarReserva($id, $data) {
+        $reserva = $this->getReserva($id);
+        $data = array_merge($reserva->toArray(), $data);
+        $this->validarReserva($data, $id);
+        $reserva->update($data);
+        return $reserva;
+    }
+
+    public function cancelarReserva($id) {
+        $reserva = $this->getReserva($id);
+        $reserva->estado = 'cancelada';
+        $reserva->save();
+        return $reserva;
+    }
+
+    private function validarReserva($data, $ignorarId = null) {
         if (empty($data['nombre_cliente']) || empty($data['telefono_cliente'])) {
             throw new Exception("Datos del cliente requeridos", 2);
+        }
+        if (empty($data['fecha']) || empty($data['hora'])) {
+            throw new Exception("Fecha y hora requeridas", 2);
+        }
+        if (!isset($data['cantidad_personas']) || $data['cantidad_personas'] <= 0) {
+            throw new Exception("La cantidad de personas debe ser mayor a cero", 2);
         }
         
         $fechaReserva = strtotime($data['fecha']);
@@ -48,36 +86,20 @@ class ReservaController
         if ($data['cantidad_personas'] > $mesa->capacidad) {
             throw new Exception("Capacidad excedida", 6);
         }
+        if (isset($data['estado']) && !in_array($data['estado'], $this->estados)) {
+            throw new Exception("Estado de reserva inválido", 8);
+        }
 
-        $existe = Reserva::where('mesa_id', $data['mesa_id'])
+        $query = Reserva::where('mesa_id', $data['mesa_id'])
                          ->where('fecha', $data['fecha'])
                          ->where('hora', $data['hora'])
                          ->whereIn('estado', ['pendiente', 'confirmada'])
-                         ->first();
+                         ;
+        if ($ignorarId) {
+            $query->where('id', '!=', $ignorarId);
+        }
+
+        $existe = $query->first();
         if ($existe) throw new Exception("Mesa ya reservada en ese horario", 7);
-
-        return Reserva::create([
-            'nombre_cliente' => $data['nombre_cliente'],
-            'telefono_cliente' => $data['telefono_cliente'],
-            'cantidad_personas' => $data['cantidad_personas'],
-            'fecha' => $data['fecha'],
-            'hora' => $data['hora'],
-            'observaciones' => $data['observaciones'] ?? null,
-            'estado' => 'pendiente',
-            'mesa_id' => $data['mesa_id']
-        ]);
-    }
-
-    public function editarReserva($id, $data) {
-        $reserva = $this->getReserva($id);
-        $reserva->update($data);
-        return $reserva;
-    }
-
-    public function cancelarReserva($id) {
-        $reserva = $this->getReserva($id);
-        $reserva->estado = 'cancelada';
-        $reserva->save();
-        return $reserva;
     }
 }

@@ -2,16 +2,15 @@
 namespace App\Controllers;
 
 use App\Models\Producto;
-use App\Models\Categoria;
 use Exception;
 
 class ProductoController
 {
     public function getProductos($filtros = []) {
-        $query = Producto::with('categoria');
+        $query = Producto::query();
         
         if (!empty($filtros['categoria'])) {
-            $query->where('categoria_id', $filtros['categoria']);
+            $query->where('categoria', $filtros['categoria']);
         }
         if (isset($filtros['disponible'])) {
             $query->where('disponible', $filtros['disponible']);
@@ -21,31 +20,38 @@ class ProductoController
     }
 
     public function getProducto($id) {
-        $producto = Producto::with('categoria')->find($id);
+        $producto = Producto::find($id);
         if (!$producto) throw new Exception("Producto no encontrado", 1);
         return $producto;
     }
 
     public function crearProducto($data) {
-        if (empty($data['nombre'])) throw new Exception("Nombre requerido", 2);
-        if ($data['precio'] <= 0) throw new Exception("Precio debe ser mayor a cero", 3);
+        if (empty(trim($data['nombre'] ?? ''))) throw new Exception("Nombre requerido", 2);
+        if (empty(trim($data['categoria'] ?? ''))) throw new Exception("Categoria requerida", 2);
+        if (!isset($data['precio']) || $data['precio'] <= 0) throw new Exception("Precio debe ser mayor a cero", 3);
         
-        $existe = Producto::where('nombre', $data['nombre'])->first();
+        $existe = Producto::where('nombre', trim($data['nombre']))->first();
         if ($existe) throw new Exception("Producto ya existe", 4);
 
         return Producto::create([
-            'nombre' => $data['nombre'],
-            'descripcion' => $data['descripcion'] ?? null,
+            'nombre' => trim($data['nombre']),
+            'categoria' => trim($data['categoria']),
             'precio' => $data['precio'],
-            'disponible' => $data['disponible'] ?? true,
-            'categoria_id' => $data['categoria_id']
+            'disponible' => $data['disponible'] ?? true
         ]);
     }
 
     public function editarProducto($id, $data) {
         $producto = $this->getProducto($id);
+        if (isset($data['nombre']) && trim($data['nombre']) === '') {
+            throw new Exception("Nombre requerido", 2);
+        }
         if (isset($data['precio']) && $data['precio'] <= 0) {
             throw new Exception("Precio debe ser mayor a cero", 3);
+        }
+        if (isset($data['nombre'])) {
+            $existe = Producto::where('nombre', trim($data['nombre']))->where('id', '!=', $id)->first();
+            if ($existe) throw new Exception("Producto ya existe", 4);
         }
         $producto->update($data);
         return $producto;
@@ -58,6 +64,6 @@ class ProductoController
     }
 
     public function getCategorias() {
-        return Categoria::all();
+        return Producto::select('categoria')->distinct()->orderBy('categoria')->get();
     }
 }
