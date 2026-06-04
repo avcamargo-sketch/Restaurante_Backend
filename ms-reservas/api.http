@@ -1,0 +1,102 @@
+### ============================================================
+### MICROSERVICIO: ms-reservas (Puerto 8002)
+### ============================================================
+
+### ============================================================
+### MESAS
+### ============================================================
+
+### ---------- PRUEBA 1: Listar todas las mesas ----------
+GET http://127.0.0.1:8002/mesas
+
+### ---------- PRUEBA 2: Consultar una mesa por ID ----------
+GET http://127.0.0.1:8002/mesa/1
+
+### ---------- PRUEBA 3: Crear nueva mesa ----------
+POST http://127.0.0.1:8002/mesa
+Content-Type: application/json
+
+{
+    "numero": "MESA-5",
+    "capacidad": 10,
+    "estado": "disponible"
+}
+
+### ---------- PRUEBA 4: Editar mesa ----------
+PUT http://127.0.0.1:8002/mesa/5
+Content-Type: application/json
+
+{
+    "numero": "MESA-5",
+    "capacidad": 12,
+    "estado": "ocupada"
+}
+
+### ---------- PRUEBA 5: Cambiar estado de mesa ----------
+PUT http://127.0.0.1:8002/mesa/5/estado
+Content-Type: application/json
+
+{
+    "estado": "fuera_servicio"
+}
+
+### ---------- PRUEBA 6: Eliminar mesa ----------
+DELETE http://127.0.0.1:8002/mesa/5
+
+### ============================================================
+### RESERVAS
+### ============================================================
+
+### ---------- PRUEBA 7: Listar todas las reservas ----------
+GET http://127.0.0.1:8002/reservas
+
+### ---------- PRUEBA 8: Consultar reserva por ID ----------
+GET http://127.0.0.1:8002/reserva/1
+
+### ---------- PRUEBA 9: Crear reserva ----------
+POST http://127.0.0.1:8002/reserva
+Content-Type: application/json
+
+{
+    "nombre_cliente": "Maria Lopez",
+    "telefono_cliente": "3009876543",
+    "cantidad_personas": 2,
+    "fecha": "2026-06-20",
+    "hora": "20:00:00",
+    "observaciones": "Cumpleaños",
+    "mesa_id": 1
+}
+
+### ---------- PRUEBA 10: Editar reserva (antes de cancelar) ----------
+PUT http://127.0.0.1:8002/reserva/2
+Content-Type: application/json
+
+{
+    "nombre_cliente": "Maria Lopez",
+    "telefono_cliente": "3009876543",
+    "cantidad_personas": 4,
+    "fecha": "2026-06-21",
+    "hora": "21:00:00",
+    "observaciones": "Aniversario",
+    "mesa_id": 3
+}
+
+### ---------- PRUEBA 11: Cambiar estado de reserva a confirmada ----------
+PUT http://127.0.0.1:8002/reserva/2/estado
+Content-Type: application/json
+
+{
+    "estado": "confirmada"
+}
+
+### ---------- PRUEBA 12: Cancelar reserva (después de editar) ----------
+PUT http://127.0.0.1:8002/reserva/2/cancelar
+
+### ---------- PRUEBA 13: Buscar reservas por fecha ----------
+GET http://127.0.0.1:8002/reservas?fecha=2026-06-10
+
+### ---------- PRUEBA 14: Buscar reservas por cliente ----------
+GET http://127.0.0.1:8002/reservas?cliente=Carlos
+
+### ---------- PRUEBA 15: Buscar reservas por estado ----------
+GET http://127.0.0.1:8002/reservas?estado=confirmada
