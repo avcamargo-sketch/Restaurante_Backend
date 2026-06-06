@@ -1,0 +1,136 @@
+### ============================================================
+### MICROSERVICIO: ms-pedidos (Puerto 8004)
+### ============================================================
+
+### ============================================================
+### PASO 1: Ver pedidos existentes
+### ============================================================
+
+### ---------- PRUEBA 1: Listar todos los pedidos ----------
+GET http://127.0.0.1:8004/pedidos
+
+### ---------- PRUEBA 2: Ver pedido original (ID 1) ----------
+GET http://127.0.0.1:8004/pedido/1
+
+### ============================================================
+### PASO 2: Crear pedido nuevo para modificar
+### ============================================================
+
+### ---------- PRUEBA 3: Crear pedido nuevo ----------
+# Ejecutar primero. El ID será 2 si reiniciaste la BD
+POST http://127.0.0.1:8004/pedido
+Content-Type: application/json
+
+{
+    "mesa_id": 4,
+    "productos": [
+        {
+            "producto_id": 1,
+            "nombre_producto": "Hamburguesa Especial",
+            "cantidad": 1,
+            "precio_unitario": 28000
+        }
+    ]
+}
+
+### ============================================================
+### PASO 3: Modificar el pedido nuevo (ID 2)
+### ============================================================
+
+### ---------- PRUEBA 4: Ver pedido nuevo ----------
+GET http://127.0.0.1:8004/pedido/2
+
+### ---------- PRUEBA 5: Agregar productos al pedido ----------
+POST http://127.0.0.1:8004/pedido/2/productos
+Content-Type: application/json
+
+{
+    "productos": [
+        {
+            "producto_id": 2,
+            "nombre_producto": "Limonada Natural",
+            "cantidad": 2,
+            "precio_unitario": 8000
+        },
+        {
+            "producto_id": 3,
+            "nombre_producto": "Cheesecake",
+            "cantidad": 1,
+            "precio_unitario": 12000
+        }
+    ]
+}
+
+### ---------- PRUEBA 6: Ver pedido con productos agregados ----------
+GET http://127.0.0.1:8004/pedido/2
+
+### ---------- PRUEBA 7: Eliminar producto del pedido ----------
+# Elimina el producto 3 (Cheesecake)
+DELETE http://127.0.0.1:8004/pedido/2/producto/3
+
+### ---------- PRUEBA 8: Ver pedido después de eliminar ----------
+GET http://127.0.0.1:8004/pedido/2
+
+### ============================================================
+### PASO 4: Cambiar estados del pedido (ID 2)
+### ============================================================
+
+### ---------- PRUEBA 9: Cambiar a en_preparacion ----------
+PUT http://127.0.0.1:8004/pedido/2/estado
+Content-Type: application/json
+
+{
+    "estado": "en_preparacion"
+}
+
+### ---------- PRUEBA 10: Cambiar a entregado ----------
+PUT http://127.0.0.1:8004/pedido/2/estado
+Content-Type: application/json
+
+{
+    "estado": "entregado"
+}
+
+### ---------- PRUEBA 11: Cambiar a pagado ----------
+PUT http://127.0.0.1:8004/pedido/2/estado
+Content-Type: application/json
+
+{
+    "estado": "pagado"
+}
+
+### ============================================================
+### PASO 5: Crear segundo pedido para cancelar
+### ============================================================
+
+### ---------- PRUEBA 12: Crear segundo pedido ----------
+POST http://127.0.0.1:8004/pedido
+Content-Type: application/json
+
+{
+    "mesa_id": 2,
+    "productos": [
+        {
+            "producto_id": 1,
+            "nombre_producto": "Hamburguesa Especial",
+            "cantidad": 2,
+            "precio_unitario": 28000
+        }
+    ]
+}
+
+### ---------- PRUEBA 13: Ver segundo pedido (ID 3) ----------
+GET http://127.0.0.1:8004/pedido/3
+
+### ---------- PRUEBA 14: Cancelar segundo pedido ----------
+PUT http://127.0.0.1:8004/pedido/3/cancelar
+
+### ---------- PRUEBA 15: Ver pedido cancelado ----------
+GET http://127.0.0.1:8004/pedido/3
+
+### ============================================================
+### PASO 6: Listar todos los pedidos al final
+### ============================================================
+
+### ---------- PRUEBA 16: Listar todos los pedidos ----------
+GET http://127.0.0.1:8004/pedidos
