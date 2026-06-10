@@ -7,9 +7,7 @@ use Exception;
 
 class ProductosController
 {
-    // ============================================================
-    // CATEGORÍAS
-    // ============================================================
+    
 
     // ---------- Listar todas las categorías ----------
     function getCategorias() {
@@ -80,9 +78,7 @@ class ProductosController
         return true;
     }
 
-    // ============================================================
-    // PRODUCTOS
-    // ============================================================
+    
 
     // ---------- Listar todos los productos ----------
     function getProductos($filtros = []) {
