@@ -6,9 +6,7 @@ use Slim\App;
 
 return function (App $app) {
     
-    // ============================================================
-    // MESAS
-    // ============================================================
+
 
     // ---------- Listar todas las mesas ----------
     $app->get('/mesas', function (Request $request, Response $response) {
@@ -160,9 +158,7 @@ return function (App $app) {
         }
     });
 
-    // ============================================================
-    // RESERVAS
-    // ============================================================
+  
 
     // ---------- Listar reservas (con filtros opcionales) ----------
     $app->get('/reservas', function (Request $request, Response $response) {

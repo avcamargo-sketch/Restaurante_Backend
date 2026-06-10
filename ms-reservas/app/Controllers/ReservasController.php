@@ -7,9 +7,7 @@ use Exception;
 
 class ReservasController
 {
-    // ============================================================
-    // MESAS
-    // ============================================================
+
 
     // ---------- Listar todas las mesas ----------
     function getMesas() {
@@ -106,9 +104,7 @@ class ReservasController
         return true;
     }
 
-    // ============================================================
-    // RESERVAS
-    // ============================================================
+
 
     // ---------- Listar todas las reservas ----------
     function getReservas($filtros = []) {
