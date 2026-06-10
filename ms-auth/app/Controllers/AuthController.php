@@ -6,10 +6,7 @@ use Exception;
 
 class AuthController
 {
-    // ============================================
-    // LOGIN: Genera token y activa sesión
-    // Ahora permite login por usuario O por correo
-    // ============================================
+
     function login($data)
     {
         // Validar que vengan credenciales (usuario o correo, más contraseña)
@@ -54,9 +51,7 @@ class AuthController
         ];
     }
 
-    // ============================================
-    // LOGOUT: Invalida token
-    // ============================================
+ 
     function logout($token)
     {
         $usuario = Usuario::where('token', $token)->first();
@@ -72,9 +67,7 @@ class AuthController
         return true;
     }
 
-    // ============================================
-    // VALIDAR SESIÓN: Verifica que el token sea válido
-    // ============================================
+
     function validarSesion($token)
     {
         if (empty($token)) {
